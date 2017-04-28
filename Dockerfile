@@ -19,8 +19,9 @@ RUN apt-get update \
 COPY library /home/
 
 RUN cd /home/library/glog \
+    && mkdir build && cd build \
     && ./configure \
-    && make \
+    && make ..\
     && make install \
     && export GLOG_log_dir=log \
     && export GLOG_minloglevel=1 \
@@ -29,11 +30,13 @@ RUN cd /home/library/glog \
     && export GLOG_max_log_size=1 \
     && cd /home/library/cgicc-3.2.9 \
     && ./configure --prefix=/usr \
-    && make \
+    && mkdir build && cd build \
+    && make .. \
     && make install \
     && cd /home/library/mysql-connector-cpp \
     && git checkout 1.1 \
-    && cmake . \
+    && mkdir build && cd build \
+    && cmake .. \
     && make \
     && make install \
     && cp libmysqlcppconn.so* /usr/local/lib/ \
@@ -50,10 +53,12 @@ RUN cd /home/library/glog \
     # && cmake .. \
     # && make \
     # && make install \
+    # 安装mongo-c-driver
     && cd /home/library/mongo-c-driver \
     && git checkout r1.6 \
     && ./autogen.sh --with-libbson=bundled \
-    && make \
+    && mkdir build && cd build \
+    && make .. \
     && make install \
     # 安装mongo-cxx-driver
     && cd /home/library/mongo-cxx-driver \
