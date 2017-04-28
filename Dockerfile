@@ -5,22 +5,27 @@
 FROM ubuntu:16.04
 #安装必要组件
 RUN apt-get update \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y apt-utils \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y git \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y apache2 \
-    && sudo apt-get install libboost-all-dev \
-    && sudo apt-get install libmysql++-dev \
-    && apt-get autoremove
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y libboost-all-dev \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y libmysql++-dev \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y mongodb \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y make \
+    && apt-get autoremove \
     && apt-get autoclean
 
 ##创建必要目录
-
+RUN mkdir /home/library/
 
 ##
-COPY library /home/
+COPY library/ /home/library/
 
+
+    #glog的安装
 RUN cd /home/library/glog \
-    && mkdir build && cd build \
     && ./configure \
+    && mkdir build && cd build \
     && make ..\
     && make install \
     && export GLOG_log_dir=log \
@@ -28,6 +33,7 @@ RUN cd /home/library/glog \
     && export GLOG_stderrthreshold=1 \
     && export GLOG_v=3 \
     && export GLOG_max_log_size=1 \
+    # cgicc的安装
     && cd /home/library/cgicc-3.2.9 \
     && ./configure --prefix=/usr \
     && mkdir build && cd build \
