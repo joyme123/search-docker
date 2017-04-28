@@ -6,6 +6,7 @@ FROM ubuntu:16.04
 #安装必要组件
 RUN apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y apt-utils \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y g++ \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y git \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y apache2 \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y libboost-all-dev \
@@ -25,8 +26,7 @@ COPY library/ /home/library/
     #glog的安装
 RUN cd /home/library/glog \
     && ./configure \
-    && mkdir build && cd build \
-    && make ..\
+    && make \
     && make install \
     && export GLOG_log_dir=log \
     && export GLOG_minloglevel=1 \
@@ -36,8 +36,7 @@ RUN cd /home/library/glog \
     # cgicc的安装
     && cd /home/library/cgicc-3.2.9 \
     && ./configure --prefix=/usr \
-    && mkdir build && cd build \
-    && make .. \
+    && make  \
     && make install \
     && cd /home/library/mysql-connector-cpp \
     && git checkout 1.1 \
@@ -45,6 +44,7 @@ RUN cd /home/library/glog \
     && cmake .. \
     && make \
     && make install \
+    # libmysqlcppconn
     && cp libmysqlcppconn.so* /usr/local/lib/ \
     && cd /home/library/cpp_redis \
     && git submodule init && git submodule update \
@@ -63,8 +63,7 @@ RUN cd /home/library/glog \
     && cd /home/library/mongo-c-driver \
     && git checkout r1.6 \
     && ./autogen.sh --with-libbson=bundled \
-    && mkdir build && cd build \
-    && make .. \
+    && make \
     && make install \
     # 安装mongo-cxx-driver
     && cd /home/library/mongo-cxx-driver \
